@@ -232,7 +232,11 @@ class Convertor:
             deep    =110,
             light   =109,
             rem     =111,
-            wake    =112
+            wake    =112,
+
+            asleep  =72,
+            restless=109,
+            awake   =112
         )
         if data_point['level'] in conv_type_dict:
             sleep_type = conv_type_dict[data_point['level']]
@@ -267,19 +271,17 @@ class Convertor:
             name='Sleep'
         )
 
-    def ConvertGFitSleepSessionV12(self, duration_ms, sleep_points, log_id):
+    def ConvertGFitSleepSessionV12(self, duration_ms, start_time_ms, end_time_ms, log_id):
         """Converts a list of Google Fit sleep points to Google fit session
 
-        sleep_points -- Google Fit sleep points
+        start_time_ms -- Sleep start time in ms
+        end_time_ms -- Sleep start time in ms
         """
-
-        min_log_millis = min([point['startTimeNanos'] for point in sleep_points]) / 10 ** 6
-        max_log_millis = max([point['endTimeNanos'] for point in sleep_points]) / 10 ** 6
 
         return dict(
             modifiedTimeMillis=int((time.time() * 1000)),
-            startTimeMillis=min_log_millis,
-            endTimeMillis=max_log_millis,
+            startTimeMillis=start_time_ms,
+            endTimeMillis=end_time_ms,
             activeTimeMillis=duration_ms,
             description='A Fitbit sleep log',
             activityType=72,

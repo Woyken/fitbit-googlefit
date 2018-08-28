@@ -270,14 +270,15 @@ class Remote:
             sleep_data_type = fit_sleep['type']
 
             data_points = fit_sleep['levels']['data']
-            short_data_points = fit_sleep['levels']['shortData']
+            start_time_ms = self.convertor.EpochOfFitbitTimestamp(fit_sleep['startTime'])
+            end_time_ms = self.convertor.EpochOfFitbitTimestamp(fit_sleep['endTime'])
 
             sleep_count += 1
             # convert all fitbit data points to google fit data points
             google_points = [self.convertor.ConvertFibitPoint("", point, 'sleepv12') for point in data_points]
 
             # 1. Write a fit session about sleep
-            google_session = self.convertor.ConvertGFitSleepSessionV12(fit_sleep['duration'], google_points, fit_sleep['logId'])
+            google_session = self.convertor.ConvertGFitSleepSessionV12(fit_sleep['duration'], start_time_ms, end_time_ms, fit_sleep['logId'])
             self.WriteSessionToGoogleFit(google_session)
 
             # 2. create activity segment data points for the activity
